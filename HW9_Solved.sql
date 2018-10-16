@@ -108,17 +108,56 @@ USING (address_id);
 SELECT * FROM staff;
 SELECT * FROM payment;
 
-SELECT s.first_name, s.last_name, SUM(p.amount)
+SELECT s.first_name, s.last_name, SUM(p.amount) AS TotalSales
 FROM staff s
 JOIN payment p
 USING (staff_id)
 GROUP	BY (staff_id);
 
 # 6c. List each film and the number of actors who are listed for that film. Use tables `film_actor` and `film`. Use inner join.
+SELECT * FROM film_actor;
+SELECT * FROM film;
 
+SELECT f.title, COUNT(fa.film_id) AS NumActors
+FROM film f
+JOIN film_actor fa
+USING (film_id)
+GROUP BY (film_id);
 
+# 6d. How many copies of the film `Hunchback Impossible` exist in the inventory system?
+SELECT * FROM inventory;
+SELECT * FROM film;
+
+SELECT f.title, COUNT(i.film_id) AS NumInStock
+FROM film f
+JOIN  inventory i
+USING (film_id)
+WHERE title = 'Hunchback Impossible';
+
+# 6e. Using the tables `payment` and `customer` and the `JOIN` command, list the total paid by each customer. List the customers alphabetically by last name:
+SELECT * FROM payment;
+SELECT * FROM customer;
+
+SELECT 	c.first_name, c.last_name, SUM(p.amount) AS TotalPaid
+FROM customer c
+JOIN payment p
+USING (customer_id)
+GROUP BY(customer_id)
+ORDER BY(last_name);
 /*
-* 6d. How many copies of the film `Hunchback Impossible` exist in the inventory system?
+* 7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an unintended consequence, films starting with the letters `K` and `Q` have also soared in popularity. Use subqueries to display the titles of movies starting with the letters `K` and `Q` whose language is English.
 
-* 6e. Using the tables `payment` and `customer` and the `JOIN` command, list the total paid by each customer. List the customers alphabetically by last name:
+* 7b. Use subqueries to display all actors who appear in the film `Alone Trip`.
+
+* 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. Use joins to retrieve this information.
+
+* 7d. Sales have been lagging among young families, and you wish to target all family movies for a promotion. Identify all movies categorized as _family_ films.
+
+* 7e. Display the most frequently rented movies in descending order.
+
+* 7f. Write a query to display how much business, in dollars, each store brought in.
+
+* 7g. Write a query to display for each store its store ID, city, and country.
+
+* 7h. List the top five genres in gross revenue in descending order. (**Hint**: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
 */
