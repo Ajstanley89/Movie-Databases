@@ -144,15 +144,77 @@ JOIN payment p
 USING (customer_id)
 GROUP BY(customer_id)
 ORDER BY(last_name);
+
+#  7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an unintended consequence, films starting with the letters `K` and `Q` have also soared in popularity. Use subqueries to display the titles of movies starting with the letters `K` and `Q` whose language is English.
+SELECT  * FROM film;
+SELECT * FROM language;
+
+SELECT title
+FROM film
+WHERE (title LIKE 'K%' OR title LIKE 'Q%')
+AND language_id IN 
+	(
+		select language_id
+		from language
+		where name = 'English'
+	);
+    
+# 7b. Use subqueries to display all actors who appear in the film `Alone Trip`.
+SELECT * FROM film;
+SELECT * FROM film_actor;
+SELECT * FROM actor;
+
+SELECT first_name, last_name
+FROM actor
+WHERE actor_id IN
+(
+	SELECT actor_id
+	FROM film_actor
+	WHERE film_id IN
+	(
+		SELECT film_id
+		FROM film
+		WHERE title = 'Alone Trip'
+	)
+);
+
+# 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. Use joins to retrieve this information.
+SELECT * FROM country;
+SELECT* FROM city;
+SELECT* FROM address;
+SELECT * FROM customer;
+
+CREATE VIEW CanCampaign AS
+    SELECT c.first_name, c.last_name, c.email
+    FROM customer c
+            JOIN address 
+            USING (address_id)
+            JOIN city 
+            USING (city_id)
+            JOIN country 
+            USING (country_id)
+    WHERE country = 'Canada';
+
+SELECT * FROM CanCampaign;
+
+# 7d. Sales have been lagging among young families, and you wish to target all family movies for a promotion. Identify all movies categorized as _family_ films.
+SELECT * FROM category;
+SELECT * FROM film_category;
+SELECT * FROM film;
+
+CREATE VIEW FamFilms AS
+	SELECT f.title
+    FROM film f
+        JOIN film_category
+        USING (film_id)
+        JOIN category
+        USING (category_id)
+	WHERE name = 'Family';
+    
+SELECT * FROM FamFilms;
+
+
 /*
-* 7a. The music of Queen and Kris Kristofferson have seen an unlikely resurgence. As an unintended consequence, films starting with the letters `K` and `Q` have also soared in popularity. Use subqueries to display the titles of movies starting with the letters `K` and `Q` whose language is English.
-
-* 7b. Use subqueries to display all actors who appear in the film `Alone Trip`.
-
-* 7c. You want to run an email marketing campaign in Canada, for which you will need the names and email addresses of all Canadian customers. Use joins to retrieve this information.
-
-* 7d. Sales have been lagging among young families, and you wish to target all family movies for a promotion. Identify all movies categorized as _family_ films.
-
 * 7e. Display the most frequently rented movies in descending order.
 
 * 7f. Write a query to display how much business, in dollars, each store brought in.
