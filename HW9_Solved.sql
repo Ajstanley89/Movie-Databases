@@ -1,20 +1,5 @@
 use sakila;
 
-/*
-* 1a. Display the first and last names of all actors from the table `actor`.
-
-* 1b. Display the first and last name of each actor in a single column in upper case letters. Name the column `Actor Name`.
-
-* 2a. You need to find the ID number, first name, and last name of an actor, of whom you know only the first name, "Joe." What is one query would you use to obtain this information?
-
-* 2b. Find all actors whose last name contain the letters `GEN`:
-
-* 2c. Find all actors whose last names contain the letters `LI`. This time, order the rows by last name and first name, in that order:
-
-* 2d. Using `IN`, display the `country_id` and `country` columns of the following countries: Afghanistan, Bangladesh, and China:
-
-*/
-
 #  1a. Display the first and last names of all actors from the table `actor`.
 
 SELECT first_name, last_name
@@ -52,7 +37,7 @@ WHERE country IN ('Afghanistan' , 'Bangladesh', 'China');
 
 # 3a. You want to keep a description of each actor. You don't think you will be performing queries on a description, so create a column in the table `actor` named `description` and use the data type `BLOB` (Make sure to research the type `BLOB`, as the difference between it and `VARCHAR` are significant).
 ALTER TABLE actor
-ADD description BLOB; # I think the difference btwn BLB and VARCHAR is that BLOB is a pointer, while VARCHAR contains the actual values inline wth the table.
+ADD description BLOB; # I think the difference btwn BLOB and VARCHAR is that BLOB is a pointer, while VARCHAR contains the actual values inline wth the table.
 
 # Display table
 SELECT* FROM actor;
@@ -93,7 +78,22 @@ set first_name = 'GROUCHO'
 WHERE first_name = 'HARPO' and last_name = 'WILLIAMS';
 
 # 5a. You cannot locate the schema of the `address` table. Which query would you use to re-create it?
-# SELECT * FROM address.schemas;
+DESCRIBE address;
+
+# I think this is what this question is asking for
+CREATE TABLE IF NOT EXISTS address (
+	address_id SMALLINT(5) AUTO_INCREMENT NOT NULL,
+    address VARCHAR(50),
+    address2 VARCHAR(50),
+    district VARCHAR(20),
+    city_id SMALLINT(5),
+    postal_code VARCHAR(10),
+    phone VARCHAR(20),
+    location GEOMETRY,
+    last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (address_id),
+    FOREIGN KEY (city_id) REFERENCES city(city_id)
+);
 
 # 6a. Use `JOIN` to display the first and last names, as well as the address, of each staff member. Use the tables `staff` and `address`:
 SELECT * FROM staff;
@@ -298,5 +298,3 @@ SELECT * FROM TopFiveGenres;
 
 DROP VIEW IF EXISTS TopFiveGenres;
         
-/*
-*/
