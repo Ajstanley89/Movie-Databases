@@ -202,8 +202,8 @@ SELECT * FROM category;
 SELECT * FROM film_category;
 SELECT * FROM film;
 
-CREATE VIEW FamFilms AS
-	SELECT f.title
+CREATE OR REPLACE VIEW FamFilms AS
+	SELECT f.title, f.rating
     FROM film f
         JOIN film_category
         USING (film_id)
@@ -213,13 +213,90 @@ CREATE VIEW FamFilms AS
     
 SELECT * FROM FamFilms;
 
+# 7e. Display the most frequently rented movies in descending order.
+SELECT  * FROM rental;
+SELECT * FROM inventory;
+SELECT  * FROM film;
 
+CREATE OR REPLACE VIEW MostRented AS
+	SELECT f.title, COUNT(f.title) AS TimesRented
+    FROM film f
+		JOIN inventory
+        USING(film_id)
+        JOIN rental
+        USING(inventory_id)
+        GROUP BY(film_id)
+        ORDER BY(TimesRented) DESC;
+        
+SELECT * FROM MostRented;
+
+# 7f. Write a query to display how much business, in dollars, each store brought in.
+SELECT * FROM payment;
+SELECT * FROM customer;
+SELECT * FROM store;
+
+CREATE OR REPLACE VIEW StoreRevenue AS
+	SELECT c.store_id, SUM(p.amount) AS Revenue
+    FROM payment p
+		JOIN customer c
+        USING(customer_id)
+        GROUP BY (store_id);
+
+SELECT * FROM StoreRevenue;
+
+# 7g. Write a query to display for each store its store ID, city, and country.
+SELECT * FROM store;
+SELECT * FROM address;
+SELECT * FROM city;
+SELECT * FROM country;
+
+
+CREATE OR REPLACE VIEW StoreInfo AS
+	SELECT s.store_id, city.city, country.country
+    FROM store s
+		JOIN address
+        USING (address_id)
+        JOIN city
+        USING (city_id)
+        JOIN country
+        USING (country_id);
+        
+SELECT * FROM StoreInfo;
+
+# 7h. List the top five genres in gross revenue in descending order. (**Hint**: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
+# 8a. In your new role as an executive, you would like to have an easy way of viewing the Top five genres by gross revenue. Use the solution from the problem above to create a view. If you haven't solved 7h, you can substitute another query to create a view.
+
+SELECT * FROM payment;
+SELECT * FROM rental;
+SELECT * FROM inventory;
+SELECT * FROM film_category;
+SELECT * FROM film;
+SELECT * FROM category;
+
+CREATE OR REPLACE VIEW TopFiveGenres AS
+	SELECT cat.name, SUM(p.amount) AS GrossRevenue
+    FROM payment p
+		JOIN rental
+        USING (rental_id)
+        JOIN inventory
+        USING (inventory_id)
+        JOIN film
+        USING (film_id)
+        JOIN film_category
+        USING (film_id)
+        JOIN category cat
+        USING(category_id)
+        GROUP BY (cat.name)
+        ORDER BY (GrossRevenue) DESC 
+        LIMIT 5;
+
+# * 8b. How would you display the view that you created in 8a?
+
+SELECT * FROM TopFiveGenres;
+
+# 8c. You find that you no longer need the view `top_five_genres`. Write a query to delete it.
+
+DROP VIEW IF EXISTS TopFiveGenres;
+        
 /*
-* 7e. Display the most frequently rented movies in descending order.
-
-* 7f. Write a query to display how much business, in dollars, each store brought in.
-
-* 7g. Write a query to display for each store its store ID, city, and country.
-
-* 7h. List the top five genres in gross revenue in descending order. (**Hint**: you may need to use the following tables: category, film_category, inventory, payment, and rental.)
 */
