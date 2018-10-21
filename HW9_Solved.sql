@@ -80,21 +80,6 @@ WHERE first_name = 'HARPO' and last_name = 'WILLIAMS';
 # 5a. You cannot locate the schema of the `address` table. Which query would you use to re-create it?
 DESCRIBE address;
 
-# I think this is what this question is asking for
-CREATE TABLE IF NOT EXISTS address (
-	address_id SMALLINT(5) AUTO_INCREMENT NOT NULL,
-    address VARCHAR(50),
-    address2 VARCHAR(50),
-    district VARCHAR(20),
-    city_id SMALLINT(5),
-    postal_code VARCHAR(10),
-    phone VARCHAR(20),
-    location GEOMETRY,
-    last_update TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    PRIMARY KEY (address_id),
-    FOREIGN KEY (city_id) REFERENCES city(city_id)
-);
-
 # 6a. Use `JOIN` to display the first and last names, as well as the address, of each staff member. Use the tables `staff` and `address`:
 SELECT * FROM staff;
 SELECT * FROM address;
